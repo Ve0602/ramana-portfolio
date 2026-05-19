@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --bg: #05070f;
+  --surface: #0d1117;
+  --card: #111827;
+  --accent: #00d4ff;
+  --accent2: #7c3aed;
+  --text: #e8eaf0;
+  --muted: #6b7280;
+  --border: #1f2937;
+  --glow: 0 0 40px rgba(0,212,255,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: 'DM Sans', sans-serif; }
+input, textarea { font-family: 'DM Sans', sans-serif; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+.section-label { font-size: 12px; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
+.section-title { font-family: 'Syne', sans-serif; font-size: clamp(28px, 4vw, 42px); font-weight: 800; margin-bottom: 48px; line-height: 1.2; }
+.psec { padding: 90px 60px; }
+.tag { background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.25); color: #a78bfa; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+
+@media (max-width: 768px) {
+  .psec { padding: 70px 20px; }
+}

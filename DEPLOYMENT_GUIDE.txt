@@ -1,0 +1,144 @@
+# 🚀 RAMANA PORTFOLIO — FULL DEPLOYMENT GUIDE
+# Complete setup: MongoDB Atlas + Render (backend) + Vercel (frontend)
+# Estimated time: 30-45 minutes
+
+═══════════════════════════════════════════════════
+STEP 1 — UPLOAD TO GITHUB (5 mins)
+═══════════════════════════════════════════════════
+
+1. Go to github.com → sign in (you already have an account ✅)
+2. Click "New repository" → name it: ramana-portfolio
+3. Set to PUBLIC → click "Create repository"
+4. On your computer, open a terminal/command prompt and run:
+
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git branch -M main
+   git remote add origin https://github.com/Ve0602/ramana-portfolio.git
+   git push -u origin main
+
+═══════════════════════════════════════════════════
+STEP 2 — MONGODB ATLAS (free database, 10 mins)
+═══════════════════════════════════════════════════
+
+1. Go to: https://www.mongodb.com/atlas/database
+2. Click "Try Free" → sign up with Google
+3. Choose FREE tier (M0) → Region: Mumbai (ap-south-1)
+4. Click "Create Cluster"
+5. On Security screen:
+   - Username: ramana
+   - Password: (create a strong password, SAVE IT)
+   - Click "Create User"
+6. On Network Access:
+   - Click "Allow Access from Anywhere" → 0.0.0.0/0
+7. Click "Connect" → "Connect your application"
+8. Copy the connection string. It looks like:
+   mongodb+srv://ramana:<password>@cluster0.xxxxx.mongodb.net/
+9. Replace <password> with your actual password
+10. Add database name: mongodb+srv://ramana:PASS@cluster0.xxxxx.mongodb.net/ramana-portfolio
+
+═══════════════════════════════════════════════════
+STEP 3 — RENDER (backend hosting, 10 mins)
+═══════════════════════════════════════════════════
+
+1. Go to: https://render.com → sign up with GitHub
+2. Click "New +" → "Web Service"
+3. Connect your GitHub repo: ramana-portfolio
+4. Settings:
+   - Name: ramana-portfolio-backend
+   - Root Directory: backend
+   - Build Command: npm install
+   - Start Command: npm start
+   - Instance Type: FREE
+5. Click "Advanced" → "Add Environment Variables":
+
+   MONGODB_URI     = (your MongoDB connection string from step 2)
+   JWT_SECRET      = (type any long random string, e.g. RamanaPortfolio2026SecretKey!)
+   ADMIN_EMAIL     = vemunooriramana0602@gmail.com
+   ADMIN_PASSWORD  = (choose a strong admin password)
+   PORT            = 5000
+   FRONTEND_URL    = https://ramana-portfolio.vercel.app (fill in after step 4)
+
+6. Click "Create Web Service"
+7. Wait 2-3 minutes for deployment
+8. Copy your backend URL (looks like: https://ramana-portfolio-backend.onrender.com)
+
+═══════════════════════════════════════════════════
+STEP 4 — VERCEL (frontend hosting, 5 mins)
+═══════════════════════════════════════════════════
+
+1. Go to: https://vercel.com → sign up with GitHub
+2. Click "New Project" → import ramana-portfolio repo
+3. Settings:
+   - Framework Preset: Create React App
+   - Root Directory: frontend
+4. Add Environment Variable:
+   REACT_APP_API_URL = https://ramana-portfolio-backend.onrender.com
+   (use the URL you got from Render in step 3)
+5. Click "Deploy"
+6. Your live URL: https://ramana-portfolio.vercel.app (or similar)
+
+═══════════════════════════════════════════════════
+STEP 5 — UPDATE BACKEND URL (2 mins)
+═══════════════════════════════════════════════════
+
+1. Go back to Render dashboard
+2. Find your backend service → Environment
+3. Update FRONTEND_URL to your actual Vercel URL
+4. Click "Save Changes" → service will redeploy
+
+═══════════════════════════════════════════════════
+STEP 6 — TEST EVERYTHING
+═══════════════════════════════════════════════════
+
+1. Visit your Vercel URL → portfolio should load ✅
+2. Click "Job Referrals" → should redirect to login ✅
+3. Click "Sign Up" → create a test account ✅
+4. After signup you should see the referrals page ✅
+5. Go to: your-url.vercel.app/login
+   - Login with your admin email + password from Step 3
+   - You should see the ⚙️ Admin button in navbar ✅
+6. Click Admin → Dashboard should show analytics ✅
+
+═══════════════════════════════════════════════════
+YOUR URLS (fill in after deployment)
+═══════════════════════════════════════════════════
+
+Public Portfolio:    https://________________.vercel.app
+Admin Dashboard:     https://________________.vercel.app/admin
+Backend API:         https://________________.onrender.com
+Admin Login Email:   vemunooriramana0602@gmail.com
+Admin Password:      (the one you set in Step 3)
+
+═══════════════════════════════════════════════════
+ADMIN DASHBOARD FEATURES
+═══════════════════════════════════════════════════
+
+📊 Dashboard  → See total clicks, users, charts, recent activity
+🔗 Referrals  → Add / Edit / Delete referral links with one click
+📝 Portfolio  → Edit all portfolio content (experience, skills, projects)
+👥 Users      → See who registered, when they last logged in, delete users
+
+TO ADD A NEW REFERRAL LINK:
+1. Log in as admin → click ⚙️ Admin
+2. Click "Referrals" tab → "+ Add New Referral"
+3. Fill in: Platform name, type, icon, description, perks, URL, category
+4. Click Save → instantly live on the referrals page!
+
+TO UPDATE YOUR REFERRAL URL (when you get a personal referral link):
+1. Admin → Referrals tab → click ✏️ Edit on Oneforma or Mercor
+2. Update the URL field with your personal referral link
+3. Save → done!
+
+═══════════════════════════════════════════════════
+NEED HELP?
+═══════════════════════════════════════════════════
+
+If you get stuck on any step, message Claude with:
+"I'm on Step X of the deployment and getting this error: [paste error]"
+
+Common issues:
+- "Cannot connect to MongoDB" → check the connection string, make sure 0.0.0.0/0 is in Network Access
+- "CORS error" → make sure FRONTEND_URL in Render matches your Vercel URL exactly
+- "Build failed" → make sure Root Directory is set correctly in Vercel (frontend) and Render (backend)
