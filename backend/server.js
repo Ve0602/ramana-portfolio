@@ -2,14 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-console.log('🔄 Starting server...');
+console.log('🔄 Starting Vemunoori Collections server...');
 require('dotenv').config();
 
 console.log('ENV CHECK:');
 console.log('  MONGODB_URI:', process.env.MONGODB_URI ? 'SET (' + process.env.MONGODB_URI.substring(0, 35) + '...)' : 'NOT SET ❌');
 console.log('  JWT_SECRET:', process.env.JWT_SECRET ? 'SET' : 'NOT SET ❌');
 console.log('  ADMIN_EMAIL:', process.env.ADMIN_EMAIL || 'NOT SET ❌');
-console.log('  PORT:', process.env.PORT || '5000');
 
 const app = express();
 
@@ -18,7 +17,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // All routes
 app.use('/api/auth', require('./routes/auth'));
@@ -27,31 +26,26 @@ app.use('/api/portfolio', require('./routes/portfolio'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/analytics', require('./routes/analytics'));
+app.use('/api/brand', require('./routes/brand'));
+app.use('/api/products', require('./routes/products'));
+app.use('/api/shop', require('./routes/shop'));
 
-app.get('/', (req, res) => res.json({ status: 'Ramana Portfolio API running ✅' }));
+app.get('/', (req, res) => res.json({ status: 'Vemunoori Collections API running ✅' }));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log('🚀 Server running on port ' + PORT);
-});
-
-console.log('🔄 Connecting to MongoDB...');
+app.listen(PORT, () => console.log('🚀 Server running on port ' + PORT));
 
 mongoose.connect(process.env.MONGODB_URI, {
   serverSelectionTimeoutMS: 30000,
   connectTimeoutMS: 30000,
-  socketTimeoutMS: 30000,
 })
   .then(async () => {
-    console.log('✅ MongoDB connected successfully!');
+    console.log('✅ MongoDB connected!');
     try {
-      await require('./utils/seed')(mongoose);
-      console.log('✅ Seed completed');
-    } catch (seedErr) {
-      console.error('⚠️ Seed error:', seedErr.message);
+      await require('./seed')(mongoose);
+      console.log('✅ Seed done');
+    } catch (e) {
+      console.error('⚠️ Seed error:', e.message);
     }
   })
-  .catch(err => {
-    console.error('❌ MongoDB connection FAILED!');
-    console.error('Error message:', err.message);
-  });
+  .catch(err => console.error('❌ MongoDB failed:', err.message));
