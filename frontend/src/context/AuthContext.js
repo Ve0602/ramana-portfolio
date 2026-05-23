@@ -18,12 +18,20 @@ export function AuthProvider({ children }) {
     } else { setLoading(false); }
   }, [token]);
 
+  // Normal email/password login
   const login = async (email, password) => {
     const { data } = await axios.post(`${API}/api/auth/login`, { email, password });
     localStorage.setItem('token', data.token);
     setToken(data.token);
     setUser(data.user);
     return data.user;
+  };
+
+  // Social login — called after getting token from backend
+  const loginWithToken = (newToken, newUser) => {
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+    setUser(newUser);
   };
 
   const register = async (name, email, password) => {
@@ -36,12 +44,13 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('gh_redirect');
     setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, loading, API }}>
+    <AuthContext.Provider value={{ user, token, login, loginWithToken, register, logout, loading, API }}>
       {children}
     </AuthContext.Provider>
   );
