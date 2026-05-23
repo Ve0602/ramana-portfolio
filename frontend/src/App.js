@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import TopBar from './components/TopBar';
 import Login from './pages/Login';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
@@ -26,7 +27,7 @@ function ProtectedUser({ children }) {
 }
 
 const Loader = () => (
-  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0500', color: '#d4a853', fontSize: 20, fontFamily: 'Syne,sans-serif', fontWeight: 700 }}>
+  <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0500', color:'#d4a853', fontSize:20, fontFamily:'Syne,sans-serif', fontWeight:700 }}>
     Loading Vemunoori Collections...
   </div>
 );
@@ -35,25 +36,19 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <TopBar />
         <Routes>
-          {/* Entry point — branded login/landing */}
-          <Route path="/" element={<Login />} />
-          {/* Main home dashboard */}
-          <Route path="/home" element={<HomePage />} />
-          {/* Shop */}
-          <Route path="/shop" element={<ShopPage />} />
-          {/* Portfolio section */}
-          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/"            element={<Login />} />
+          <Route path="/home"        element={<HomePage />} />
+          <Route path="/shop"        element={<ShopPage />} />
+          <Route path="/portfolio"   element={<Portfolio />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
-          <Route path="/resume" element={<ResumePage />} />
-          <Route path="/freelance" element={<FreelancePage />} />
-          {/* Referrals — login required */}
-          <Route path="/referrals" element={<ProtectedUser><Referrals /></ProtectedUser>} />
-          {/* Auth */}
-          <Route path="/register" element={<Register />} />
-          {/* Admin */}
-          <Route path="/admin" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/resume"      element={<ResumePage />} />
+          <Route path="/freelance"   element={<FreelancePage />} />
+          <Route path="/referrals"   element={<ProtectedUser><Referrals /></ProtectedUser>} />
+          <Route path="/register"    element={<Register />} />
+          <Route path="/admin"       element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
+          <Route path="*"            element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -20,15 +20,15 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 
 // All routes
-app.use('/api/auth', require('./routes/auth'));
+app.use('/api/auth',      require('./routes/auth'));
 app.use('/api/referrals', require('./routes/referrals'));
 app.use('/api/portfolio', require('./routes/portfolio'));
-app.use('/api/projects', require('./routes/projects'));
-app.use('/api/admin', require('./routes/admin'));
+app.use('/api/projects',  require('./routes/projects'));
+app.use('/api/admin',     require('./routes/admin'));
 app.use('/api/analytics', require('./routes/analytics'));
-app.use('/api/brand', require('./routes/brand'));
-app.use('/api/products', require('./routes/products'));
-app.use('/api/shop', require('./routes/shop'));
+app.use('/api/brand',     require('./routes/brand'));
+app.use('/api/products',  require('./routes/products'));
+app.use('/api/shop',      require('./routes/shop'));
 
 app.get('/', (req, res) => res.json({ status: 'Vemunoori Collections API running ✅' }));
 
@@ -42,7 +42,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   .then(async () => {
     console.log('✅ MongoDB connected!');
     try {
-      await require('./seed')(mongoose);
+      await require('./utils/seed')();   // ← correct path
       console.log('✅ Seed done');
     } catch (e) {
       console.error('⚠️ Seed error:', e.message);
