@@ -13,23 +13,26 @@ import ProjectDetail from './pages/ProjectDetail';
 import ResumePage from './pages/ResumePage';
 import FreelancePage from './pages/FreelancePage';
 
-function ProtectedAdmin({ children }) {
+// Requires login — redirects to login page with redirect param
+function Protected({ children, redirectTo }) {
   const { user, loading } = useAuth();
   if (loading) return <Loader />;
-  if (!user || user.role !== 'admin') return <Navigate to="/" />;
+  if (!user) return <Navigate to={`/?redirect=${redirectTo || '/home'}`} />;
   return children;
 }
 
-function ProtectedUser({ children }) {
+// Admin only
+function AdminOnly({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <Loader />;
-  if (!user) return <Navigate to="/?redirect=/referrals" />;
+  if (!user) return <Navigate to="/?redirect=/admin" />;
+  if (user.role !== 'admin') return <Navigate to="/home" />;
   return children;
 }
 
 const Loader = () => (
   <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0500', color:'#d4a853', fontSize:20, fontFamily:'Syne,sans-serif', fontWeight:700 }}>
-    Loading Vemunoori Collections...
+    Loading...
   </div>
 );
 
@@ -39,18 +42,25 @@ export default function App() {
       <BrowserRouter>
         <TopBar />
         <Routes>
-          <Route path="/"                element={<Login />} />
-          <Route path="/auth/github"     element={<GitHubCallback />} />
-          <Route path="/home"            element={<HomePage />} />
-          <Route path="/shop"            element={<ShopPage />} />
-          <Route path="/portfolio"       element={<Portfolio />} />
-          <Route path="/projects/:id"    element={<ProjectDetail />} />
-          <Route path="/resume"          element={<ResumePage />} />
-          <Route path="/freelance"       element={<FreelancePage />} />
-          <Route path="/referrals"       element={<ProtectedUser><Referrals /></ProtectedUser>} />
-          <Route path="/register"        element={<Register />} />
-          <Route path="/admin"           element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
-          <Route path="*"                element={<Navigate to="/" />} />
+          {/* ── PUBLIC — no login needed ── */}
+          <Route path="/"              element={<Login />} />
+          <Route path="/auth/github"   element={<GitHubCallback />} />
+          <Route path="/register"      element={<Register />} />
+          <Route path="/portfolio"     element={<Portfolio />} />
+          <Route path="/projects/:id"  element={<ProjectDetail />} />
+          <Route path="/resume"        element={<ResumePage />} />
+
+          {/* ── PROTECTED — login required ── */}
+          <Route path="/home"          element={<Protected redirectTo="/home"><HomePage /></Protected>} />
+          <Route path="/shop"          element={<Protected redirectTo="/shop"><ShopPage /></Protected>} />
+          <Route path="/freelance"     element={<Protected redirectTo="/freelance"><FreelancePage /></Protected>} />
+          <Route path="/referrals"     element={<Protected redirectTo="/referrals"><Referrals /></Protected>} />
+
+          {/* ── ADMIN ONLY ── */}
+          <Route path="/admin"         element={<AdminOnly><AdminDashboard /></AdminOnly>} />
+
+          {/* ── FALLBACK ── */}
+          <Route path="*"              element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
