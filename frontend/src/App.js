@@ -12,8 +12,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import ProjectDetail from './pages/ProjectDetail';
 import ResumePage from './pages/ResumePage';
 import FreelancePage from './pages/FreelancePage';
+import JobsPage from './pages/JobsPage';
+import HirePage from './pages/HirePage';
 
-// Requires login — redirects to login page with redirect param
 function Protected({ children, redirectTo }) {
   const { user, loading } = useAuth();
   if (loading) return <Loader />;
@@ -21,7 +22,6 @@ function Protected({ children, redirectTo }) {
   return children;
 }
 
-// Admin only
 function AdminOnly({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <Loader />;
@@ -42,24 +42,26 @@ export default function App() {
       <BrowserRouter>
         <TopBar />
         <Routes>
-          {/* ── PUBLIC — no login needed ── */}
+          {/* ── PUBLIC ── */}
           <Route path="/"              element={<Login />} />
           <Route path="/auth/github"   element={<GitHubCallback />} />
           <Route path="/register"      element={<Register />} />
           <Route path="/portfolio"     element={<Portfolio />} />
           <Route path="/projects/:id"  element={<ProjectDetail />} />
           <Route path="/resume"        element={<ResumePage />} />
+          {/* Freelance pages — public so clients can hire and freelancers can register */}
+          <Route path="/freelance"     element={<FreelancePage />} />
+          <Route path="/freelance/jobs" element={<JobsPage />} />
+          <Route path="/freelance/hire" element={<HirePage />} />
 
           {/* ── PROTECTED — login required ── */}
           <Route path="/home"          element={<Protected redirectTo="/home"><HomePage /></Protected>} />
           <Route path="/shop"          element={<Protected redirectTo="/shop"><ShopPage /></Protected>} />
-          <Route path="/freelance"     element={<Protected redirectTo="/freelance"><FreelancePage /></Protected>} />
           <Route path="/referrals"     element={<Protected redirectTo="/referrals"><Referrals /></Protected>} />
 
           {/* ── ADMIN ONLY ── */}
           <Route path="/admin"         element={<AdminOnly><AdminDashboard /></AdminOnly>} />
 
-          {/* ── FALLBACK ── */}
           <Route path="*"              element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

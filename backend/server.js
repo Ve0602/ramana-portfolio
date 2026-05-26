@@ -32,13 +32,12 @@ app.use('/api/brand',         require('./routes/brand'));
 app.use('/api/products',      require('./routes/products'));
 app.use('/api/shop',          require('./routes/shop'));
 app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/freelance',     require('./routes/freelanceRoutes'));
 
 app.get('/', (req, res) => res.json({ status: 'Vemunoori Collections API running ✅' }));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log('🚀 Server running on port ' + PORT));
-
-// Store backend URL for internal calls
 process.env.BACKEND_URL = `http://localhost:${PORT}`;
 
 mongoose.connect(process.env.MONGODB_URI, {
@@ -53,5 +52,25 @@ mongoose.connect(process.env.MONGODB_URI, {
     } catch (e) {
       console.error('⚠️ Seed error:', e.message);
     }
+
+    // ── AUTO RSS SYNC SCHEDULER ──────────────────────────────
+    // Run once on startup (after 30s delay to let server settle)
+    setTimeout(async () => {
+      try {
+        const { syncRSSJobs } = require('./utils/rssScraper');
+        await syncRSSJobs();
+      } catch (e) { console.log('Initial RSS sync skipped:', e.message); }
+    }, 30000);
+
+    // Run every 6 hours automatically
+    setInterval(async () => {
+      try {
+        const { syncRSSJobs } = require('./utils/rssScraper');
+        console.log('⏰ Scheduled RSS sync starting...');
+        await syncRSSJobs();
+      } catch (e) { console.log('Scheduled RSS sync error:', e.message); }
+    }, 6 * 60 * 60 * 1000); // 6 hours
+
+    console.log('⏰ RSS auto-sync scheduled every 6 hours');
   })
   .catch(err => console.error('❌ MongoDB failed:', err.message));
