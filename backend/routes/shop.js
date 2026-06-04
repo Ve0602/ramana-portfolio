@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Service = require('../models/Service');
 const Review = require('../models/Review');
-const { adminOnly, auth } = require('../middleware/auth');
+const { adminOnly } = require('../middleware/auth');
 
 // SERVICES
 router.get('/services', async (req, res) => {

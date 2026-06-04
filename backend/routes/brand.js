@@ -2,7 +2,6 @@ const router = require('express').Router();
 const Brand = require('../models/Brand');
 const { adminOnly } = require('../middleware/auth');
 
-// GET all brand settings (public)
 router.get('/', async (req, res) => {
   try {
     const settings = await Brand.find();
@@ -12,7 +11,6 @@ router.get('/', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-// GET single setting
 router.get('/:key', async (req, res) => {
   try {
     const setting = await Brand.findOne({ key: req.params.key });
@@ -21,7 +19,6 @@ router.get('/:key', async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-// PUT update setting (admin)
 router.put('/:key', adminOnly, async (req, res) => {
   try {
     const setting = await Brand.findOneAndUpdate(

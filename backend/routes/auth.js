@@ -6,34 +6,24 @@ const axios = require('axios');
 
 const signToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-// Register
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
     if (!name || !email || !password)
       return res.status(400).json({ message: 'Name, email and password are required' });
-
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ message: 'Email already registered' });
-
     const user = await User.create({ name, email, password, phone: phone || '', role: 'user' });
     const token = signToken(user._id);
-
-    // Send welcome email in background (don't await — don't block signup)
-    const baseUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const baseUrl = process.env.BACKEND_URL || 'http://localhost:5000';
     axios.post(`${baseUrl}/api/notifications/welcome`, { userName: name, userEmail: email })
       .catch(e => console.log('Welcome email skipped:', e.message));
-
-    res.status(201).json({
-      token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role, photo: user.photo || '' }
-    });
+    res.status(201).json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role, photo: user.photo || '' } });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
-// Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -43,23 +33,16 @@ router.post('/login', async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
     const token = signToken(user._id);
-    res.json({
-      token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role, photo: user.photo || '' }
-    });
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role, photo: user.photo || '' } });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
-// Get current user
 router.get('/me', auth, (req, res) => {
-  res.json({
-    user: { id: req.user._id, name: req.user.name, email: req.user.email, role: req.user.role, photo: req.user.photo || '', phone: req.user.phone || '' }
-  });
+  res.json({ user: { id: req.user._id, name: req.user.name, email: req.user.email, role: req.user.role, photo: req.user.photo || '', phone: req.user.phone || '' } });
 });
 
-// Update profile (phone, name)
 router.put('/profile', auth, async (req, res) => {
   try {
     const { name, phone } = req.body;

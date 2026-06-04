@@ -1,26 +1,3 @@
-const mongoose = require('mongoose');
-
-const projectSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  shortDesc: { type: String, required: true },
-  icon: { type: String, default: '🚀' },
-  category: { type: String, default: 'Machine Learning' },
-  thumbnail: { type: String, default: '' },
-  tags: [{ type: String }],
-  overview: { type: String, default: '' },
-  problem: { type: String, default: '' },
-  solution: { type: String, default: '' },
-  steps: [{ title: String, desc: String }],
-  results: [{ type: String }],
-  highlights: [{ icon: String, title: String, value: String }],
-  techStack: [{ icon: String, name: String, purpose: String }],
-  liveUrl: { type: String, default: '' },
-  githubUrl: { type: String, default: '' },
-  videoUrl: { type: String, default: '' },
-  isActive: { type: Boolean, default: true },
-  order: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
-
-module.exports = mongoose.model('Project', projectSchema);
+const mongoose=require('mongoose');
+const s=new mongoose.Schema({title:{type:String,required:true},shortDesc:{type:String,required:true},icon:{type:String,default:'🚀'},category:{type:String,default:'Machine Learning'},thumbnail:{type:String,default:''},tags:[{type:String}],overview:{type:String,default:''},problem:{type:String,default:''},solution:{type:String,default:''},steps:[{title:String,desc:String}],results:[{type:String}],highlights:[{icon:String,title:String,value:String}],techStack:[{icon:String,name:String,purpose:String}],liveUrl:{type:String,default:''},githubUrl:{type:String,default:''},videoUrl:{type:String,default:''},isActive:{type:Boolean,default:true},order:{type:Number,default:0},createdAt:{type:Date,default:Date.now},updatedAt:{type:Date,default:Date.now}});
+module.exports=mongoose.model('Project',s);
